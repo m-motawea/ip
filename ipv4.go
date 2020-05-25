@@ -3,6 +3,9 @@ package ip
 import (
 	"encoding/binary"
 	"errors"
+	"fmt"
+	"strconv"
+	"strings"
 )
 
 func checksum(buf []byte) uint16 {
@@ -42,11 +45,54 @@ type TTL uint8
 type Protocol uint8
 type HeaderChecksum uint16
 type IP uint32
-
 type Option struct {
 	Code   uint8
 	Length uint8
 	Data   []byte
+}
+type Options []Option
+
+func (i *IP) FromString(s string) error {
+	temp := strings.Split(s, ".")
+	if len(temp) < 4 {
+		return errors.New("invalid ipv4 string")
+	}
+	// Octets 0xFF FF FF FF
+	// oct 1 to 4 from left to right
+	num := 0
+	oct1, err := strconv.Atoi(temp[0])
+	if err != nil {
+		return err
+	}
+	oct2, err := strconv.Atoi(temp[1])
+	if err != nil {
+		return err
+	}
+	oct3, err := strconv.Atoi(temp[2])
+	if err != nil {
+		return err
+	}
+	oct4, err := strconv.Atoi(temp[3])
+	if err != nil {
+		return err
+	}
+	num = (num | oct1) << 24
+	num = (num | oct2) << 16
+	num = (num | oct3) << 8
+	num = (num | oct4)
+	*i = IP(num)
+	return nil
+}
+
+func (i *IP) String() string {
+	// Octets 0xFF FF FF FF
+	// oct 1 to 4 from left to right
+	num := uint32(*i)
+	oct1 := num >> 24
+	oct2 := (num & 0xFF0000) >> 16
+	oct3 := (num & 0xFF00) >> 8
+	oct4 := (num & 0xFF)
+	return fmt.Sprintf("%d.%d.%d.%d", oct1, oct2, oct3, oct4)
 }
 
 func (opt *Option) Len() int {
@@ -73,8 +119,6 @@ func (opt *Option) UnmarshalBinary(b []byte) error {
 	}
 	return nil
 }
-
-type Options []Option
 
 func (opts Options) Len() int {
 	optsLen := 0

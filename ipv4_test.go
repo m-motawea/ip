@@ -25,4 +25,10 @@ func TestIPv4(t *testing.T) {
 	if !bytes.Equal(res, packet) {
 		t.Errorf("result is not correct\n marshal result:\n%v\nactual:\n%v\n", res, packet)
 	}
+	log.Printf("SRC IP: %s", ip.Source.String())
+	log.Printf("DST IP: %s", ip.Destination.String())
+
+	ip2 := IP(0)
+	ip2.FromString("10.10.10.100")
+	log.Printf("IP: %s", ip2.String())
 }
