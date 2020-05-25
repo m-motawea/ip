@@ -259,7 +259,7 @@ func (ip *IPv4) UnmarshalBinary(b []byte) error {
 		// read padding if any
 		if (20 + optsLen) < len(b) {
 			padding := make([]byte, len(b)-20-optsLen)
-			copy(b[20+optsLen:ip.HLEN*4], padding)
+			copy(padding, b[20+optsLen:ip.HLEN*4])
 			ip.Padding = padding
 		}
 
