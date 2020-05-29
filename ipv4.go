@@ -76,8 +76,8 @@ func (i *IP) FromString(s string) error {
 	if err != nil {
 		return err
 	}
-	num = (num | oct1) << 24
-	num = (num | oct2) << 16
+	num = (num | oct1) << 8
+	num = (num | oct2) << 8
 	num = (num | oct3) << 8
 	num = (num | oct4)
 	*i = IP(num)

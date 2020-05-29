@@ -29,6 +29,6 @@ func TestIPv4(t *testing.T) {
 	log.Printf("DST IP: %s", ip.Destination.String())
 
 	ip2 := IP(0)
-	ip2.FromString("10.10.10.100")
+	ip2.FromString("10.10.0.50")
 	log.Printf("IP: %s", ip2.String())
 }
